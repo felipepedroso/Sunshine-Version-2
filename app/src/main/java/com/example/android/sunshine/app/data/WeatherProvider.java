@@ -244,7 +244,7 @@ public class WeatherProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         int numberOfRowsDeleted = 0;
 
-        if ( null == selection ) selection = "1";
+        //if ( null == selection ) selection = "1";
         switch (match) {
             case WEATHER: {
                 numberOfRowsDeleted = db.delete(WeatherContract.WeatherEntry.TABLE_NAME, selection, selectionArgs);
