@@ -42,16 +42,15 @@ public class Utility {
     }
 
 
-    static String formatTemperature(double temperature, boolean isMetric) {
+    static String formatTemperature(Context context, double temperature, boolean isMetric) {
         double temp;
-        if (!isMetric) {
-            temp = 9 * temperature / 5 + 32;
+        if ( !isMetric ) {
+            temp = 9*temperature/5+32;
         } else {
             temp = temperature;
         }
-        return String.format("%.0f", temp);
+        return context.getString(R.string.format_temperature, temp);
     }
-
 
     static String formatDate(long dateInMillis) {
         Date date = new Date(dateInMillis);
