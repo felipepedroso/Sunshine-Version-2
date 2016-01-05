@@ -98,7 +98,7 @@ public class ForecastAdapter extends CursorAdapter {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
         // Use placeholder image for now
-        viewHolder.iconView.setImageResource(R.drawable.ic_launcher);
+        //viewHolder.iconView.setImageResource(R.drawable.ic_launcher);
 
         // TODO Read date from cursor
         String date = Utility.getFriendlyDayString(mContext, cursor.getLong(ForecastFragment.COL_WEATHER_DATE));
