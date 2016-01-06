@@ -2,6 +2,7 @@ package com.example.android.sunshine.app;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -22,8 +23,6 @@ import android.widget.TextView;
 
 import com.example.android.sunshine.app.data.WeatherContract;
 
-import java.util.StringTokenizer;
-
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -31,7 +30,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
 
     private static final String FORECAST_SHARE_HASHTAG = " #SunshineApp";
-    private static final int DETAIL_ACTIVITY_LOADER = 22121989;
+    private static final int DETAIL_LOADER = 22121989;
 
     private static final String[] DETAILS_COLUMNS = {
             WeatherContract.WeatherEntry.TABLE_NAME + "." + WeatherContract.WeatherEntry._ID,
@@ -57,24 +56,42 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     static final int COL_WEATHER_WIND = 7;
     static final int COL_WEATHER_PRESSURE = 8;
     static final int COL_WEATHER_CONDITION_ID = 9;
+    public static String DETAIL_URI = "URI";
 
     private String forecastStr;
     private ShareActionProvider mShareActionProvider;
     private ViewHolder mViewHolder;
+    private Uri mUri;
 
     public DetailFragment() {
         setHasOptionsMenu(true);
     }
 
+    public static DetailFragment newInstance(Uri detailsUri) {
+        Bundle arguments = new Bundle();
+        arguments.putParcelable(DetailFragment.DETAIL_URI, detailsUri);
+
+        DetailFragment fragment = new DetailFragment();
+        fragment.setArguments(arguments);
+
+        return fragment;
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        getLoaderManager().initLoader(DETAIL_ACTIVITY_LOADER, null, this);
+        getLoaderManager().initLoader(DETAIL_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            mUri = arguments.getParcelable(DetailFragment.DETAIL_URI);
+        }
+
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
         mViewHolder = new ViewHolder(rootView);
@@ -112,13 +129,20 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Intent intent = getActivity().getIntent();
-
-        if (intent == null || intent.getData() == null) {
-            return null;
+        if (null != mUri) {
+            // Now create and return a CursorLoader that will take care of
+            // creating a Cursor for the data being displayed.
+            return new CursorLoader(
+                    getActivity(),
+                    mUri,
+                    DETAILS_COLUMNS,
+                    null,
+                    null,
+                    null
+            );
         }
 
-        return new CursorLoader(getActivity(), intent.getData(), DETAILS_COLUMNS, null, null, null);
+        return null;
     }
 
     @Override
@@ -164,6 +188,17 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    public void onLocationChanged(String newLocation) {
+        // replace the uri, since the location has changed
+        Uri uri = mUri;
+        if (null != uri) {
+            long date = WeatherContract.WeatherEntry.getDateFromUri(uri);
+            Uri updatedUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(newLocation, date);
+            mUri = updatedUri;
+            getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
+        }
     }
 
     public static class ViewHolder {
