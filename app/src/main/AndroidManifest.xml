@@ -21,6 +21,7 @@
         <activity
             android:name=".DetailActivity"
             android:label="@string/title_activity_detail"
+            android:theme="@style/AppTheme"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -30,6 +31,7 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
+            android:theme="@style/SettingsTheme"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
