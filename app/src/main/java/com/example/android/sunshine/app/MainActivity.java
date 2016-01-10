@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity implements ForecastFragment.Callback{
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
+    public static final java.lang.String TWO_PANE_SETTING = "twoPaneSet";
     private String mLocation;
     private boolean mTwoPane;
 
@@ -37,6 +38,9 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         } else {
             mTwoPane = false;
         }
+        ForecastFragment ff = (ForecastFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
+        ff.setUseTodayLayout(!mTwoPane);
+
     }
 
     @Override
