@@ -162,6 +162,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         String weatherDesc = data.getString(COL_WEATHER_DESC);
         mViewHolder.descriptionView.setText(weatherDesc);
+        mViewHolder.iconView.setContentDescription(getString(R.string.weather_image, weatherDesc));
 
         boolean isMetric = Utility.isMetric(getActivity());
 
